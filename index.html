@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scope - Solar Installer Survey</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#0a434b',      /* Deep Teal from logo */
+                            tealHover: '#073238',
+                            tealLight: '#f0f7f8',
+                            gold: '#d49726',      /* Amber Gold from logo */
+                            goldHover: '#ba821c',
+                            goldLight: '#fdf8ee',
+                            bg: '#f8fafc',
+                            cardBg: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for clean iconography -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        /* Custom radio & checkbox selection state animations */
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-card:hover {
+            border-color: #0a434b;
+        }
+        .option-card.selected {
+            border-color: #d49726;
+            background-color: #fdf8ee;
+            box-shadow: 0 2px 8px rgba(212, 151, 38, 0.15);
+        }
+        .checkbox-custom {
+            transition: all 0.15s ease;
+        }
+        .radio-custom {
+            transition: all 0.15s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between font-sans antialiased">
+
+    <!-- TOP HEADER / BRAND BAR -->
+    <header class="w-full bg-white border-b border-gray-200 py-6 px-4">
+        <div class="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Scope Logo SVG directly matching provided image -->
+            <div class="flex items-center gap-3">
+                <img src="icon.png" alt="" style="width:30px; height: auto; border-radius: 20px;"> 
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-teal tracking-tight">sc<span style="color: #D79334;">op</span>e</h1>
+                <!--<svg width="180" height="48" viewBox="0 0 240 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-10 w-auto">
+                    <!-- Outer Circle Segment 
+                    <circle cx="36" cy="32" r="26" stroke="#0a434b" stroke-width="4.5" stroke-dasharray="140 24" stroke-dashoffset="18" fill="none" />
+                    <!-- Inner Circle Accent
+                    <circle cx="36" cy="32" r="18" fill="#d49726" />
+                    <!-- Cutout 'op' representation inside icon 
+                    <circle cx="31" cy="32" r="6" stroke="#ffffff" stroke-width="3" fill="none"/>
+                    <circle cx="41" cy="32" r="6" stroke="#ffffff" stroke-width="3" fill="none"/>
+                    <path d="M31 26 V38 M41 26 V38" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+
+                    <!-- Logo Text 'scope' 
+                    <text x="75" y="44" fill="#0a434b" font-family="'Inter', sans-serif" font-weight="800" font-size="36" letter-spacing="-1">sc</text>
+                    <!-- 'o' cut/gold
+                    <circle cx="132" cy="32" r="10" stroke="#d49726" stroke-width="5" fill="none" />
+                    <line x1="125" y1="25" x2="139" y2="39" stroke="#d49726" stroke-width="3.5" />
+                    <!-- 'p' gold 
+                    <text x="146" y="44" fill="#d49726" font-family="'Inter', sans-serif" font-weight="800" font-size="36" letter-spacing="-1">p</text>
+                    <!-- 'e' teal 
+                    <text x="172" y="44" fill="#0a434b" font-family="'Inter', sans-serif" font-weight="800" font-size="36" letter-spacing="-1">e</text>
+                </svg>-->
+            </div>
+            
+            <!-- Quick Endpoint Settings Toggle
+            <button onclick="toggleSettingsModal()" class="text-xs font-semibold text-gray-500 hover:text-brand-teal flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-md transition">
+                <i class="fa-solid fa-gear text-gray-400"></i> Form Setup / Endpoint-->
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN FORM CONTAINER -->
+    <main class="flex-grow py-8 px-4 sm:px-6">
+        <div class="max-w-2xl mx-auto">
+            
+            <!-- Form Header Title & Subtitle -->
+            <div class="mb-8 text-left">
+                <span class="inline-block px-3 py-1 bg-brand-tealLight text-brand-teal font-semibold text-xs rounded-full uppercase tracking-wider mb-2">
+                    Solar Industry Survey
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-teal tracking-tight">
+                    Help Us Simplify Solar Monitoring
+                </h1>
+                <p class="text-gray-600 mt-2 text-sm sm:text-base leading-relaxed">
+                    We're building a unified fleet management dashboard for solar installers.
+                     Share your insights below to help us prioritize integrations and features - it
+                      takes less than 60 seconds.
+                </p>
+            </div>
+
+            <!-- Survey Card Container -->
+            <form id="scopeSurveyForm" action="https://formspree.io/f/mredzlbg" method="POST" onsubmit="handleFormSubmit(event)" class="space-y-8 bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-sm">
+                
+                <!-- Q1: ACTIVE INSTALLATIONS -->
+                <div class="space-y-3">
+                    <label class="block text-base font-bold text-brand-teal">
+                        1. How many active solar installations do you currently manage? <span class="text-amber-600">*</span>
+                    </label>
+                    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 text-center flex flex-col items-center justify-center hover:border-brand-teal">
+                            <input type="radio" name="q1_installations" value="1 - 20" required class="hidden" onchange="updateCardSelections()">
+                            <span class="font-bold text-gray-800 text-lg">1 - 20</span>
+                            <span class="text-xs text-gray-500 mt-0.5">Sites</span>
+                        </label>
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 text-center flex flex-col items-center justify-center hover:border-brand-teal">
+                            <input type="radio" name="q1_installations" value="21 – 100" class="hidden" onchange="updateCardSelections()">
+                            <span class="font-bold text-gray-800 text-lg">21 – 100</span>
+                            <span class="text-xs text-gray-500 mt-0.5">Sites</span>
+                        </label>
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 text-center flex flex-col items-center justify-center hover:border-brand-teal">
+                            <input type="radio" name="q1_installations" value="101 – 300" class="hidden" onchange="updateCardSelections()">
+                            <span class="font-bold text-gray-800 text-lg">101 – 300</span>
+                            <span class="text-xs text-gray-500 mt-0.5">Sites</span>
+                        </label>
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 text-center flex flex-col items-center justify-center hover:border-brand-teal">
+                            <input type="radio" name="q1_installations" value="300+" class="hidden" onchange="updateCardSelections()">
+                            <span class="font-bold text-brand-teal text-lg">300+</span>
+                            <span class="text-xs text-gray-500 mt-0.5">Enterprise</span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Q2: INVERTER BRANDS (CHECKBOXES) -->
+                <div class="space-y-3">
+                    <label class="block text-base font-bold text-brand-teal">
+                        2. Which inverter brands do you install most? <span class="text-gray-400 font-normal text-xs">(Select all that apply)</span> <span class="text-amber-600">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center justify-between hover:border-brand-teal">
+                            <div class="flex items-center gap-3">
+                                <div class="checkbox-custom w-5 h-5 rounded border border-gray-300 flex items-center justify-center text-white bg-white">
+                                    <i class="fa-solid fa-check text-xs"></i>
+                                </div>
+                                <span class="font-semibold text-gray-800 text-sm">Sunsynk / Deye</span>
+                            </div>
+                            <input type="checkbox" name="q2_inverters" value="Sunsynk / Deye" class="hidden" onchange="updateCardSelections()">
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center justify-between hover:border-brand-teal">
+                            <div class="flex items-center gap-3">
+                                <div class="checkbox-custom w-5 h-5 rounded border border-gray-300 flex items-center justify-center text-white bg-white">
+                                    <i class="fa-solid fa-check text-xs"></i>
+                                </div>
+                                <span class="font-semibold text-gray-800 text-sm">Victron Energy</span>
+                            </div>
+                            <input type="checkbox" name="q2_inverters" value="Victron" class="hidden" onchange="updateCardSelections()">
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center justify-between hover:border-brand-teal">
+                            <div class="flex items-center gap-3">
+                                <div class="checkbox-custom w-5 h-5 rounded border border-gray-300 flex items-center justify-center text-white bg-white">
+                                    <i class="fa-solid fa-check text-xs"></i>
+                                </div>
+                                <span class="font-semibold text-gray-800 text-sm">Huawei FusionSolar</span>
+                            </div>
+                            <input type="checkbox" name="q2_inverters" value="Huawei" class="hidden" onchange="updateCardSelections()">
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center justify-between hover:border-brand-teal">
+                            <div class="flex items-center gap-3">
+                                <div class="checkbox-custom w-5 h-5 rounded border border-gray-300 flex items-center justify-center text-white bg-white">
+                                    <i class="fa-solid fa-check text-xs"></i>
+                                </div>
+                                <span class="font-semibold text-gray-800 text-sm">Growatt</span>
+                            </div>
+                            <input type="checkbox" name="q2_inverters" value="Growatt" class="hidden" onchange="updateCardSelections()">
+                        </label>
+
+                        <label class="option-card sm:col-span-2 cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center justify-between hover:border-brand-teal">
+                            <div class="flex items-center gap-3">
+                                <div class="checkbox-custom w-5 h-5 rounded border border-gray-300 flex items-center justify-center text-white bg-white">
+                                    <i class="fa-solid fa-check text-xs"></i>
+                                </div>
+                                <span class="font-semibold text-gray-800 text-sm">Luxpower / Other</span>
+                            </div>
+                            <input type="checkbox" name="q2_inverters" value="Luxpower / Other" class="hidden" onchange="updateCardSelections()">
+                        </label>
+                    </div>
+                    <div id="q2-error" class="hidden text-xs text-red-500 font-medium pt-1">Please select at least one inverter brand.</div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Q3: BIGGEST HEADACHE -->
+                <div class="space-y-3">
+                    <label class="block text-base font-bold text-brand-teal">
+                        3. What is your biggest headache managing systems across different apps? <span class="text-amber-600">*</span>
+                    </label>
+                    <div class="space-y-2.5">
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center gap-3 hover:border-brand-teal">
+                            <input type="radio" name="q3_headache" value="Unnecessary site visits / wasted fuel" required class="hidden" onchange="updateCardSelections()">
+                            <div class="radio-custom w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-brand-gold hidden"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">Unnecessary site visits / wasted fuel</span>
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center gap-3 hover:border-brand-teal">
+                            <input type="radio" name="q3_headache" value="Customers calling before I even know there's a fault" class="hidden" onchange="updateCardSelections()">
+                            <div class="radio-custom w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-brand-gold hidden"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">Customers calling before I even know there's a fault</span>
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center gap-3 hover:border-brand-teal">
+                            <input type="radio" name="q3_headache" value="Tracking warranties and serial numbers" class="hidden" onchange="updateCardSelections()">
+                            <div class="radio-custom w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-brand-gold hidden"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">Tracking warranties and serial numbers</span>
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center gap-3 hover:border-brand-teal">
+                            <input type="radio" name="q3_headache" value="Juggling 4–5 different monitoring logins" class="hidden" onchange="updateCardSelections()">
+                            <div class="radio-custom w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-brand-gold hidden"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">Juggling 4–5 different monitoring logins</span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Q4: SITE VISITS PER MONTH -->
+                <div class="space-y-3">
+                    <label class="block text-base font-bold text-brand-teal">
+                        4. On average, how many unnecessary site visits do you run per month? <span class="text-amber-600">*</span>
+                    </label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 text-center flex flex-col items-center justify-center hover:border-brand-teal">
+                            <input type="radio" name="q4_site_visits" value="0 – 2" required class="hidden" onchange="updateCardSelections()">
+                            <span class="font-bold text-gray-800 text-base sm:text-lg">0 – 2</span>
+                            <span class="text-xs text-gray-500 mt-0.5">Visits / mo</span>
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 text-center flex flex-col items-center justify-center hover:border-brand-teal">
+                            <input type="radio" name="q4_site_visits" value="3 – 8" class="hidden" onchange="updateCardSelections()">
+                            <span class="font-bold text-gray-800 text-base sm:text-lg">3 – 8</span>
+                            <span class="text-xs text-gray-500 mt-0.5">Visits / mo</span>
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 text-center flex flex-col items-center justify-center hover:border-brand-teal">
+                            <input type="radio" name="q4_site_visits" value="9+" class="hidden" onchange="updateCardSelections()">
+                            <span class="font-bold text-brand-teal text-base sm:text-lg">9+</span>
+                            <span class="text-xs text-gray-500 mt-0.5">Visits / mo</span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+
+                <!-- Company / Installer Name Field -->
+<div class="space-y-2">
+    <label class="block text-sm font-semibold text-brand-teal">
+        5. Company Name / Your Name <span class="text-amber-600">*</span>
+    </label>
+    <input required
+        type="text" 
+        name="company_name" 
+        placeholder="e.g. Apex Solar / John Doe" 
+        class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent transition-all"
+    />
+</div>
+
+                <!-- Q5: CONTACT NUMBER / WHATSAPP -->
+                <div class="space-y-2">
+                    <label for="contact_number" class="block text-base font-bold text-brand-teal">
+                        6. What is the best contact number / WhatsApp for follow-ups? <span class="text-amber-600">*</span>
+                    </label>
+                    <p class="text-xs text-gray-500">We will only use this to clarify your response or reach out for beta access.</p>
+                    <div class="relative rounded-xl shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                        </div>
+                        <input type="tel" name="q5_contact" id="contact_number" required placeholder="+27 82 123 4567" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold text-gray-800 font-medium text-sm transition">
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Q6: BETA TESTER INTENT -->
+                <div class="space-y-3">
+                    <label class="block text-base font-bold text-brand-teal">
+                        7. Would you be willing to beta test a unified 1-dashboard tool for 5 of your sites? <span class="text-amber-600">*</span>
+                    </label>
+                    <div class="space-y-2.5">
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center gap-3 hover:border-brand-teal">
+                            <input type="radio" name="q6_beta_test" value="Yes, sign me up!" required class="hidden" onchange="updateCardSelections()">
+                            <div class="radio-custom w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-brand-gold hidden"></div>
+                            </div>
+                            <span class="text-sm font-semibold text-brand-teal flex items-center gap-2">
+                                <i class="fa-solid fa-rocket text-brand-gold"></i> Yes, sign me up!
+                            </span>
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center gap-3 hover:border-brand-teal">
+                            <input type="radio" name="q6_beta_test" value="Maybe, tell me more first" class="hidden" onchange="updateCardSelections()">
+                            <div class="radio-custom w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-brand-gold hidden"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">Maybe, tell me more first</span>
+                        </label>
+
+                        <label class="option-card cursor-pointer border border-gray-200 rounded-xl p-3.5 flex items-center gap-3 hover:border-brand-teal">
+                            <input type="radio" name="q6_beta_test" value="No" class="hidden" onchange="updateCardSelections()">
+                            <div class="radio-custom w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-brand-gold hidden"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-600">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <div class="pt-4">
+                    <button type="submit" id="submitBtn" class="w-full py-4 px-6 bg-brand-gold hover:bg-brand-goldHover text-white font-bold text-base rounded-xl shadow-md transition duration-200 flex items-center justify-center gap-2 transform active:scale-[0.99]">
+                        <span>Submit Response</span>
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                    </button>
+                </div>
+
+            </form>
+
+            <!-- SUCCESS FEEDBACK SCREEN -->
+            <div id="successScreen" class="hidden bg-white p-8 sm:p-12 rounded-2xl border border-gray-200 shadow-sm text-center space-y-6">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-extrabold text-brand-teal">Thank You!</h2>
+                    <p class="text-gray-600 mt-2 text-sm sm:text-base">
+                        Your input has been recorded. The Scope team will review your feedback and be in touch 
+                        regarding early access to the unified dashboard.
+                    </p>
+                </div>
+
+                <div id="submittedSummary" class="text-left bg-gray-50 border border-gray-200 rounded-xl p-4 text-xs space-y-2 text-gray-600">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="downloadCSV()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download text-gray-500"></i> Download CSV Copy
+                    </button>
+                    <button onclick="resetForm()" class="px-4 py-2.5 bg-brand-teal text-white hover:bg-brand-tealHover font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> Submit Another Response
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full text-center py-6 border-t border-gray-200 bg-white text-xs text-gray-400">
+        <p>&copy; <span id="year"></span> Scope Technologies. All rights reserved.</p>
+    </footer>
+
+    <!-- SETTINGS MODAL (Formspree / Supabase URL Configuration) -->
+    <div id="settingsModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-md w-full p-6 space-y-4">
+            <div class="flex items-center justify-between border-b pb-3 border-gray-100">
+                <h3 class="font-bold text-brand-teal text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-brand-gold"></i> Form Destination Setup
+                </h3>
+                <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-gray-600 text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-gray-600 leading-relaxed">
+                By default, form submissions will be saved locally in browser storage & downloadable as CSV.
+                 Paste your <strong>Formspree URL</strong> or <strong>Supabase Webhook URL</strong> 
+                 below to automatically forward live submissions to your email/database!
+            </p>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-gray-700">Formspree or Custom Webhook URL:</label>
+                <input type="url" id="endpointUrl" placeholder="https://formspree.io/f/mredzlbg" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-gold">
+                <p class="text-[11px] text-gray-400">
+                    <i class="fa-solid fa-circle-info"></i> How to use Formspree: Create a free account at <strong>Formspree.io</strong>, create a form, and paste the action endpoint link here!
+                </p>
+            </div>
+
+            <div class="pt-2 flex justify-end gap-2">
+                <button onclick="toggleSettingsModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg">Cancel</button>
+                <button onclick="saveSettings()" class="px-4 py-2 bg-brand-teal text-white hover:bg-brand-tealHover font-semibold text-xs rounded-lg">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR INTERACTIVITY AND SUBMISSION -->
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    let lastSubmissionData = null;
+
+    // Hardcoded Formspree Endpoint URL
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mredzlbg';
+
+    // Function to update visual state of custom options
+    function updateCardSelections() {
+        document.querySelectorAll('.option-card').forEach(card => {
+            const input = card.querySelector('input');
+            const checkboxBox = card.querySelector('.checkbox-custom');
+            const radioDot = card.querySelector('.radio-custom div');
+
+            if (input.checked) {
+                card.classList.add('selected');
+                if (checkboxBox) {
+                    checkboxBox.classList.remove('bg-white', 'border-gray-300');
+                    checkboxBox.classList.add('bg-brand-gold', 'border-brand-gold');
+                }
+                if (radioDot) {
+                    radioDot.classList.remove('hidden');
+                }
+            } else {
+                card.classList.remove('selected');
+                if (checkboxBox) {
+                    checkboxBox.classList.add('bg-white', 'border-gray-300');
+                    checkboxBox.classList.remove('bg-brand-gold', 'border-brand-gold');
+                }
+                if (radioDot) {
+                    radioDot.classList.add('hidden');
+                }
+            }
+        });
+    }
+
+    // Form Submission Handler
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Validate checkboxes (Q2)
+        const inverters = Array.from(form.querySelectorAll('input[name="q2_inverters"]:checked')).map(cb => cb.value);
+        const q2Error = document.getElementById('q2-error');
+        if (inverters.length === 0) {
+            q2Error.classList.remove('hidden');
+            q2Error.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        } else {
+            q2Error.classList.add('hidden');
+        }
+
+        // Gather Data
+        
+const formData = {
+    timestamp: new Date().toISOString(),
+    company_name: form.querySelector('input[name="company_name"]')?.value || 'Not provided',
+    installations_managed: form.querySelector('input[name="q1_installations"]:checked')?.value || '',
+    inverter_brands: inverters.join(', '),
+    biggest_headache: form.querySelector('input[name="q3_headache"]:checked')?.value || '',
+    unnecessary_site_visits: form.querySelector('input[name="q4_site_visits"]:checked')?.value || '',
+    contact_whatsapp: form.querySelector('input[name="q5_contact"]')?.value || '',
+    beta_tester_intent: form.querySelector('input[name="q6_beta_test"]:checked')?.value || ''
+};
+
+        lastSubmissionData = formData;
+
+        // UI Loading State
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Sending Response...`;
+
+        // Send to Formspree
+        try {
+            const response = await fetch(FORMSPREE_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                showSuccessScreen(formData);
+            } else {
+                alert("There was an issue sending your answers. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>Submit Response</span> <i class="fa-solid fa-paper-plane text-sm"></i>`;
+            }
+        } catch (err) {
+            console.warn('Network error, saving locally fallback:', err);
+            // Save locally if offline or network fails
+            const existing = JSON.parse(localStorage.getItem('scope_responses') || '[]');
+            existing.push(formData);
+            localStorage.setItem('scope_responses', JSON.stringify(existing));
+            
+            showSuccessScreen(formData);
+        }
+    }
+
+    function showSuccessScreen(data) {
+        document.getElementById('scopeSurveyForm').classList.add('hidden');
+        const successScreen = document.getElementById('successScreen');
+        successScreen.classList.remove('hidden');
+
+        const summary = document.getElementById('submittedSummary');
+        summary.innerHTML = `
+    <div class="font-bold text-brand-teal mb-1 border-b border-gray-200 pb-1">Submission Details Recorded:</div>
+    <div><strong>Company/Name:</strong> ${data.company_name}</div>
+    <div><strong>Manage:</strong> ${data.installations_managed} installations</div>
+    <div><strong>Inverters:</strong> ${data.inverter_brands}</div>
+    <div><strong>Headache:</strong> ${data.biggest_headache}</div>
+    <div><strong>Visits/mo:</strong> ${data.unnecessary_site_visits}</div>
+    <div><strong>Contact:</strong> ${data.contact_whatsapp}</div>
+    <div><strong>Beta Signup:</strong> ${data.beta_tester_intent}</div>
+`;
+    }
+
+    function resetForm() {
+        document.getElementById('scopeSurveyForm').reset();
+        updateCardSelections();
+        document.getElementById('scopeSurveyForm').classList.remove('hidden');
+        document.getElementById('successScreen').classList.add('hidden');
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').innerHTML = `<span>Submit Response</span> <i class="fa-solid fa-paper-plane text-sm"></i>`;
+    }
+
+    function downloadCSV() {
+        if (!lastSubmissionData) return;
+        const headers = Object.keys(lastSubmissionData).join(',');
+        const values = Object.values(lastSubmissionData).map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+        const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + values;
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `scope_survey_response_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
